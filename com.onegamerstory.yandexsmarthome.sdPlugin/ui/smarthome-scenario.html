@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+
+<head lang="en">
+	<title>Yandex Smart Home Scenario</title>
+	<meta charset="utf-8" />
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+
+
+<body>
+  <!--
+    Learn more about property inspector components at https://sdpi-components.dev/docs/components
+  -->
+  <!--
+  <sdpi-item label="Click to create">  
+  	<sdpi-button onclick="oauth()">Яндекс OAuth</sdpi-button>
+  	<sdpi-button>Как получить токен?</sdpi-button>
+  </sdpi-item>
+  -->
+
+	<sdpi-item label="Enter the token">  
+		<sdpi-password id="tokenField" setting="token"></sdpi-password>
+		<sdpi-button onclick="connectSmartHome()">Подключиться</sdpi-button>
+	</sdpi-item>
+
+	<sdpi-item label="Select scenario">
+		<sdpi-select setting="scenarioSelect" datasource="getScenarios" loading="Fetching scenarios..." placeholder="Please choose scenario"></sdpi-select>
+		<sdpi-button id="refreshButton" onclick="refreshScenarios()">Получить список сценариев</sdpi-button>
+	</sdpi-item>
+
+	<script>
+		function connectSmartHome() {
+		  
+			const { streamDeckClient } = SDPIComponents;
+			const tokenInput = document.getElementById('tokenField');
+
+			streamDeckClient.setSettings({
+				token: tokenInput.value
+			});
+		}
+
+		function refreshScenarios() {
+			const select = document.querySelector('sdpi-select[datasource="getScenarios"]');
+			if (select) {
+			  select.refresh();
+			}
+		}
+
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+{
+	"Name": "Yandex Smart Home",
+	"Version": "1.0.0.1",
+	"Author": "onegamerstory",
+	"Actions": [
+		{
+			"Name": "Yandex Smart Home Scenario",
+			"UUID": "com.onegamerstory.yandexsmarthome.smarthome-scenario",
+			"Icon": "imgs/actions/scenario/icon",
+			"Tooltip": "Run the Yandex smart home scenario",
+			"PropertyInspectorPath": "ui/smarthome-scenario.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/scenario/key",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/scenario/keyOn",
+					"TitleAlignment": "middle"
+				}
+			]
+		}
+	],
+	"Category": "Yandex Smart Home",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"CodePath": "bin/plugin.js",
+	"Description": "Yandex Smart Home Scenario",
+	"Icon": "imgs/plugin/marketplace",
+	"SDKVersion": 2,
+	"Software": {
+		"MinimumVersion": "6.5"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "20",
+		"Debug": "enabled"
+	},
+	"UUID": "com.onegamerstory.yandexsmarthome"
+}
