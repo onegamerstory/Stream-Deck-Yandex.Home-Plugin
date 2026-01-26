@@ -1,5 +1,7 @@
 # Stream-Deck-Yandex.Home-Plugin
-Плагин для Stream Deck, который позволяет привязывать выбранный сценарий умного дома к кнопке на Stream Deck
+Плагин для Elgato Stream Deck, который позволяет привязывать выбранный сценарий умного дома к кнопке на Stream Deck.
+
+**Если у вас Stream Deck от брендов Fifine, Miracast, Ajazz - устанавливайте** [вот этот плагин](https://github.com/qwertyonek/yandex-smarthome-ajazz-plugin) 
 
 # Получение токена Умного дома Яндекс 
 
