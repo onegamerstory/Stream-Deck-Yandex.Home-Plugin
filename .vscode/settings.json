@@ -13,5 +13,8 @@
 			],
 			"url": "https://schemas.elgato.com/streamdeck/plugins/layout.json"
 		}
-	]
+	],
+	"chat.tools.terminal.autoApprove": {
+		"streamdeck": true
+	}
 }

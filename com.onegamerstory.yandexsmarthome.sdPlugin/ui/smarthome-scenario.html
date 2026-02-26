@@ -31,23 +31,46 @@
 	</sdpi-item>
 
 	<script>
-		function connectSmartHome() {
-		  
-			const { streamDeckClient } = SDPIComponents;
-			const tokenInput = document.getElementById('tokenField');
+		async function connectSmartHome() {
+			try {
+				const tokenInput = document.getElementById('tokenField');
+				const token = tokenInput?.value?.trim();
 
-			streamDeckClient.setSettings({
-				token: tokenInput.value
-			});
-		}
+				if (!token) {
+					alert('Пожалуйста, введите токен');
+					return;
+				}
 
-		function refreshScenarios() {
-			const select = document.querySelector('sdpi-select[datasource="getScenarios"]');
-			if (select) {
-			  select.refresh();
+				console.log('Сохранение токена...');
+				const { streamDeckClient } = SDPIComponents;
+				await streamDeckClient.setSettings({
+					token: token
+				});
+				console.log('Токен сохранен!');
+			} catch (error) {
+				console.error('Ошибка при подключении:', error);
+				alert('Ошибка: ' + error.message);
 			}
 		}
 
+		function refreshScenarios() {
+			try {
+				const select = document.querySelector('sdpi-select[datasource="getScenarios"]');
+				if (select) {
+					console.log('Обновляю список сценариев...');
+					select.refresh();
+				} else {
+					console.error('Элемент select не найден');
+				}
+			} catch (error) {
+				console.error('Ошибка при обновлении сценариев:', error);
+			}
+		}
+
+		// Инициализация при загрузке страницы
+		document.addEventListener('DOMContentLoaded', function() {
+			console.log('Страница сценариев загружена');
+		});
 	</script>
 
 </body>

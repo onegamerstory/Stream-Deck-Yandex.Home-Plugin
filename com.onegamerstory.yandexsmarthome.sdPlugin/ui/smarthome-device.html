@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+	<title>Yandex Smart Home Device</title>
+	<meta charset="utf-8" />
+	<script src="https://sdpi-components.dev/releases/v4/sdpi-components.js"></script>
+</head>
+
+<body>
+	<sdpi-item label="Enter the token">
+		<sdpi-password id="tokenField" setting="token"></sdpi-password>
+		<sdpi-button onclick="connectSmartHome()">Подключиться</sdpi-button>
+	</sdpi-item>
+
+	<sdpi-item label="Select device">
+		<sdpi-select setting="deviceSelect" datasource="getDevices" loading="Fetching devices..." placeholder="Please choose device"></sdpi-select>
+		<sdpi-button id="refreshButton" onclick="refreshDevices()">Получить список устройств</sdpi-button>
+	</sdpi-item>
+
+	<script>
+		async function connectSmartHome() {
+			try {
+				const tokenInput = document.getElementById('tokenField');
+				const token = tokenInput?.value?.trim();
+
+				if (!token) {
+					alert('Пожалуйста, введите токен');
+					return;
+				}
+
+				console.log('Сохранение токена...');
+				const { streamDeckClient } = SDPIComponents;
+				await streamDeckClient.setSettings({
+					token: token
+				});
+				console.log('Токен сохранен!');
+			} catch (error) {
+				console.error('Ошибка при подключении:', error);
+				alert('Ошибка: ' + error.message);
+			}
+		}
+
+		function refreshDevices() {
+			try {
+				const select = document.querySelector('sdpi-select[datasource="getDevices"]');
+				if (select) {
+					console.log('Обновляю список устройств...');
+					select.refresh();
+				} else {
+					console.error('Элемент select не найден');
+				}
+			} catch (error) {
+				console.error('Ошибка при обновлении устройств:', error);
+			}
+		}
+
+		// Инициализация при загрузке страницы
+		document.addEventListener('DOMContentLoaded', function() {
+			console.log('Страница устройств загружена');
+		});
+	</script>
+
+</body>
+
+</html>
