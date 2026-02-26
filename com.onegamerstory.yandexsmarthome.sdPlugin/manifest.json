@@ -16,9 +16,25 @@
 				{
 					"Image": "imgs/actions/scenario/key",
 					"TitleAlignment": "middle"
-				},
+				}
+			]
+		},
+		{
+			"Name": "Yandex Smart Home Device",
+			"UUID": "com.onegamerstory.yandexsmarthome.smarthome-device",
+			"Icon": "imgs/actions/scenario/icon",
+			"Tooltip": "Control Yandex smart home device",
+			"PropertyInspectorPath": "ui/smarthome-device.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
 				{
 					"Image": "imgs/actions/scenario/keyOn",
+					"TitleAlignment": "middle"
+				},
+				{
+					"Image": "imgs/actions/scenario/key",
 					"TitleAlignment": "middle"
 				}
 			]
@@ -27,7 +43,7 @@
 	"Category": "Yandex Smart Home",
 	"CategoryIcon": "imgs/plugin/category-icon",
 	"CodePath": "bin/plugin.js",
-	"Description": "Yandex Smart Home Scenario",
+	"Description": "Yandex Smart Home Scenario and Device Control",
 	"Icon": "imgs/plugin/marketplace",
 	"SDKVersion": 2,
 	"Software": {
