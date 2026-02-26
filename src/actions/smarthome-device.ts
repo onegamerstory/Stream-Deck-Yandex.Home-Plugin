@@ -158,6 +158,13 @@ export class SmarthomeDevice extends SingletonAction<DeviceSettings> {
         
         await ev.action.setSettings(settings);
 
+        // Если выбрано устройство, сразу проверяем его состояние
+        if (settings.deviceSelect) {
+          logger.info("Выбрано устройство, проверяю состояние...");
+          await sleep(1000); // Небольшая задержка перед проверкой
+          await this.updateDeviceState();
+        }
+
         await sleep(5000);
         await ev.action.setTitle("");
       } catch (err) {
