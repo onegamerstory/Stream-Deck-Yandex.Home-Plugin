@@ -1,7 +1,7 @@
-import streamDeck, { action, KeyDownEvent, SingletonAction, WillAppearEvent, DidReceiveSettingsEvent, JsonValue, SendToPluginEvent } from "@elgato/streamdeck";
+import streamDeck, { action, KeyDownEvent, SingletonAction, WillAppearEvent, DidReceiveSettingsEvent, JsonValue, SendToPluginEvent, WillDisappearEvent } from "@elgato/streamdeck";
 import type { DataSourcePayload, DataSourceResult } from "../sdpi";
 import { getToken, saveToken } from "../storage";
-import { getUserInfo, toggleDevice, YandexDevice } from "../yandex-api";
+import { getUserInfo, toggleDevice, getDeviceState, YandexDevice } from "../yandex-api";
 
 const logger = streamDeck.logger.createScope("device-action");
 
@@ -9,10 +9,15 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 @action({ UUID: "com.onegamerstory.yandexsmarthome.smarthome-device" })
 export class SmarthomeDevice extends SingletonAction<DeviceSettings> {
+  private pollInterval: NodeJS.Timeout | null = null;
+  private currentSettings: DeviceSettings | null = null;
+  private currentAction: any = null;
   
   override async onWillAppear(ev: WillAppearEvent<DeviceSettings>): Promise<void> {
     // Загружаем сохраненный токен, если его нет
     const settings = await ev.action.getSettings() as DeviceSettings;
+    this.currentSettings = settings;
+    this.currentAction = ev.action;
     
     if (!settings.token) {
       const savedToken = getToken();
@@ -21,12 +26,76 @@ export class SmarthomeDevice extends SingletonAction<DeviceSettings> {
           ...settings,
           token: savedToken
         });
+        settings.token = savedToken;
       }
+    }
+
+    // Начинаем периодический опрос состояния устройства
+    this.startPolling();
+  }
+
+  override async onWillDisappear(ev: WillDisappearEvent<DeviceSettings>): Promise<void> {
+    // Останавливаем периодический опрос
+    this.stopPolling();
+    this.currentAction = null;
+  }
+
+  private startPolling(): void {
+    // Останавливаем предыдущий опрос, если он был
+    this.stopPolling();
+
+    // Сразу проверяем состояние
+    this.updateDeviceState();
+
+    // Затем проверяем каждые 60 секунд
+    this.pollInterval = setInterval(() => {
+      this.updateDeviceState();
+    }, 60000); // 60 секунд
+  }
+
+  private stopPolling(): void {
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+      this.pollInterval = null;
+      logger.info("Опрос состояния устройства остановлен");
     }
   }
 
+  private async updateDeviceState(): Promise<void> {
+    if (!this.currentAction) {
+      logger.warn("Текущее действие не установлено");
+      return;
+    }
+
+    if (!this.currentSettings?.deviceSelect) {
+      logger.warn("ID устройства не выбран, опрос пропущен");
+      return;
+    }
+
+    const token = this.currentSettings.token || getToken();
+    if (!token) {
+      logger.warn("Токен не найден для опроса состояния");
+      return;
+    }
+
+    try {
+      const deviceState = await getDeviceState(token, this.currentSettings.deviceSelect);
+      
+      if (deviceState !== null) {
+        // Преобразуем состояние в state для Stream Deck
+        // true (вкл) = state 0 (первый/ВКЛ), false (выкл) = state 1 (второй/ВЫКЛ)
+        const streamDeckState = deviceState ? 0 : 1;
+        await this.currentAction.setState(streamDeckState);
+        logger.info(`Состояние устройства ${this.currentSettings.deviceSelect} обновлено: ${deviceState ? 'ВКЛ' : 'ВЫКЛ'}`);
+      }
+    } catch (err) {
+      logger.error("Ошибка при обновлении состояния устройства:", err);
+    }
+  }
+  
   override async onKeyDown(ev: KeyDownEvent<DeviceSettings>): Promise<void> {
     const { settings } = ev.payload;
+    this.currentSettings = settings;
 
     if (settings.deviceSelect) {
       logger.info("ID устройства: " + settings.deviceSelect);
@@ -40,14 +109,15 @@ export class SmarthomeDevice extends SingletonAction<DeviceSettings> {
 
       try {
         // Переключаем состояние устройства
-        const isEnabled = ev.payload.state;
-        const newValue = isEnabled ? false : true;
+        // Текущее состояние: 0 = ВКЛ, 1 = ВЫКЛ
+        const currentState = ev.payload.state;
+        const newState = currentState === 0 ? 1 : 0; // Переключаем на противоположное
+        const newValue = newState === 0; // true если нужно включить, false если выключить
 
         const success = await toggleDevice(token, settings.deviceSelect, newValue);
 
         if (success) {
-          // Меняем локально
-          const newState = isEnabled ? 0 : 1;
+          // Обновляем state на кнопке
           await ev.action.setState(newState);
 
           logger.info("Устройство изменено!");
@@ -65,6 +135,7 @@ export class SmarthomeDevice extends SingletonAction<DeviceSettings> {
 
   override async onDidReceiveSettings(ev: DidReceiveSettingsEvent<DeviceSettings>): Promise<void> {
     const { settings } = ev.payload;
+    this.currentSettings = settings;
     logger.info("onDidReceiveSettings вызван для устройств", settings);
     
     if (settings.token && settings.token.trim() !== "") {

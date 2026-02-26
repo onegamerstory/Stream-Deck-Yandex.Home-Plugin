@@ -16,10 +16,6 @@
 				{
 					"Image": "imgs/actions/scenario/key",
 					"TitleAlignment": "middle"
-				},
-				{
-					"Image": "imgs/actions/scenario/keyOn",
-					"TitleAlignment": "middle"
 				}
 			]
 		},
@@ -34,11 +30,11 @@
 			],
 			"States": [
 				{
-					"Image": "imgs/actions/scenario/key",
+					"Image": "imgs/actions/scenario/keyOn",
 					"TitleAlignment": "middle"
 				},
 				{
-					"Image": "imgs/actions/scenario/keyOn",
+					"Image": "imgs/actions/scenario/key",
 					"TitleAlignment": "middle"
 				}
 			]

@@ -126,3 +126,42 @@ export const toggleDevice = async (
     throw err;
   }
 };
+
+/**
+ * Получить состояние конкретного устройства
+ * @param token - Токен доступа
+ * @param deviceId - ID устройства
+ * @returns true если устройство включено, false если выключено, или null если ошибка
+ */
+export const getDeviceState = async (
+  token: string,
+  deviceId: string
+): Promise<boolean | null> => {
+  try {
+    const userInfo = await getUserInfo(token);
+    const device = userInfo.devices?.find(d => d.id === deviceId);
+    
+    if (!device || !device.capabilities) {
+      logger.error(`[Yandex API] Устройство ${deviceId} не найдено или нет capabilities`);
+      return null;
+    }
+
+    // Ищем capability типа on_off
+    const onOffCapability = device.capabilities.find(
+      cap => cap.type === 'devices.capabilities.on_off'
+    );
+
+    if (!onOffCapability || !onOffCapability.state) {
+      logger.warn(`[Yandex API] Capability on_off не найдена для устройства ${deviceId}`);
+      return null;
+    }
+
+    const state = onOffCapability.state.value as boolean;
+    logger.log(`[Yandex API] Состояние устройства ${deviceId}: ${state}`);
+    return state;
+  } catch (err) {
+    logger.error(`[Yandex API] Ошибка при получении состояния устройства:`, err);
+    return null;
+  }
+};
+
