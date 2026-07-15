@@ -1,5 +1,5 @@
 # Stream-Deck-Yandex.Home-Plugin
-Плагин для Elgato Stream Deck, который позволяет привязывать выбранный сценарий умного дома к кнопке на Stream Deck.
+Плагин для Elgato Stream Deck, который позволяет привязывать выбранный сценарий или устройство умного дома к кнопке на Stream Deck.
 
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/onegamerstory/Stream-Deck-Yandex.Home-Plugin/total)
 ![GitHub Repo stars](https://img.shields.io/github/stars/onegamerstory/Stream-Deck-Yandex.Home-Plugin)
@@ -45,16 +45,18 @@
 
 Устанавливаем файл **com.onegamerstory.yandexsmarthome.sdPlugin.streamDeckPlugin**, скачанный со [страницы релизов](https://github.com/onegamerstory/Stream-Deck-Yandex.Home-Plugin/releases)
 После этого плагин появится в списке:
+
 <img width="267" height="160" alt="image" src="https://github.com/user-attachments/assets/a6bf2fb9-7a31-4f6d-83ef-233473e80d75" />
 
 ## 2. Использование
 
 Перетаскиваем действие на нужную кнопку Stream Deck:
+
 <img width="546" height="714" alt="image" src="https://github.com/user-attachments/assets/dbbecde4-ef55-467a-b210-0efdc899ef58" />
 
-В поле _Enter the token_ вставляем токен Умного дома Яндекс
-Далее, нажимаем кнопку _Подключиться_ - плагин оповестит надписью **OKAY** на экране самой кнопки в случае успеха, иначе - надписью **ERROR**.
+ - В поле _Enter the token_ вставляем токен Умного дома Яндекс
+ - Далее, нажимаем кнопку _Подключиться_ - плагин оповестит надписью **OKAY** на экране самой кнопки в случае успеха, иначе - надписью **ERROR**
+ - После успешного подключения нажать кнопку _Получить список сценариев_, а затем выбрать нужный сценарий из выпадающего списка.
+ - Сценарий привязан к кнопке и готов к работе
 
-После успешного подключения нажать кнопку _Получить список сценариев_, а затем выбрать нужный сценарий из выпадающего списка.
-
-Сценарий привязан к кнопке и готов к работе.
+Подобный принцип работы и для устройств
